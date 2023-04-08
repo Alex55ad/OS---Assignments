@@ -20,12 +20,16 @@ int list(char *dir_path, int size, int exec)
     char path[MAX_PATH_LEN];
     if (dir == NULL)
     {
-        printf("Directory could not be open or not found\n");
+        printf("ERROR\n");
         return ERROR;
     }
+    else
+        printf("SUCCESS\n");
     while ((entry = readdir(dir)) != NULL)
     {
         snprintf(path, MAX_PATH_LEN, "%s/%s", dir_path, entry->d_name); // building the path
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            continue;
         if (stat(path, &stats) == -1)
         {
             continue;
@@ -52,7 +56,7 @@ int list(char *dir_path, int size, int exec)
     return SUCCESS;
 }
 
-int list_recursive(char *dir_path, int size, int exec)
+int list_recursive(char *dir_path, int size, int exec, int recursive)
 {
     struct dirent *entry;
     struct stat stats;
@@ -60,9 +64,14 @@ int list_recursive(char *dir_path, int size, int exec)
     DIR *dir = opendir(dir_path);
     if (dir == NULL)
     {
-        printf("Directory could not be open or not found\n");
+        printf("ERROR\n");
         return ERROR;
     }
+    else if (recursive == 0)
+        printf("SUCCESS\n");
+
+    char **stack = NULL;
+    int stack_size = 0;
     while ((entry = readdir(dir)) != NULL)
     {
         snprintf(path, MAX_PATH_LEN, "%s/%s", dir_path, entry->d_name); // building the path
@@ -74,41 +83,44 @@ int list_recursive(char *dir_path, int size, int exec)
         {
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
                 continue;
-            if (list_recursive(path, size, exec) == SUCCESS)
+            if (list_recursive(path, size, exec, 1) == SUCCESS)
             {
                 if (exec == 1)
                 {
                     if (access(path, X_OK) == 0)
-                        printf("%s\n", path);
+                        stack = realloc(stack, sizeof(char *) * (stack_size + 1)), stack[stack_size++] = strdup(path);
                 }
                 else
-                printf("%s\n", path);
-                closedir(dir);
-                return SUCCESS;
+                    stack = realloc(stack, sizeof(char *) * (stack_size + 1)), stack[stack_size++] = strdup(path);
             }
         }
         else if (S_ISREG(stats.st_mode))
         {
             if (exec == 1)
-            {
-                if (access(path, X_OK) == 0)
-                    printf("%s\n", path);
-            }
-            if (size > 0)
-            {
-                if (stats.st_size < size)
-                    printf("%s\n", path);
-            }
-            if (size > 0 && exec == 1)
-            {
-                if (access(path, X_OK) == 0 && stats.st_size < size)
-                    printf("%s\n", path);
-            }
-            if (size == 0 && exec == 0)
+        {
+            if (access(path, X_OK) == 0)
                 printf("%s\n", path);
+        }
+        if (size > 0)
+        {
+            if (stats.st_size < size)
+                printf("%s\n", path);
+        }
+        if (size > 0 && exec == 1)
+        {
+            if (access(path, X_OK) == 0 && stats.st_size < size)
+                printf("%s\n", path);
+        }
+        if (size == 0 && exec == 0)
+            printf("%s\n", path);
         }
     }
     closedir(dir);
+    for (int i = stack_size - 1; i >= 0; i--)
+    {
+        printf("%s\n", stack[i]);
+    }
+    free(stack);
     return SUCCESS;
 }
 
@@ -123,39 +135,31 @@ int main(int argc, char **argv)
     {
         char *cmd = argv[1];
         if (strcmp(cmd, "variant") == 0)
-            printf("Variant number: 39249\n");
+            printf("39249\n");
         if (strcmp(cmd, "list") == 0)
         {
             int size = 0, exec = 0, recursive = 0;
             char *path = strchr(argv[argc - 1], '=') + 1;
-            if (argc > 3)
+
+            for (int i = 2; i < argc - 1; i++)
             {
-                for (int i = 2; i < argc - 1; i++)
+                if (strstr(argv[i], "has_perm_execute") != NULL)
+                    exec = 1;
+                if (strstr(argv[i], "size_smaller=") != NULL)
                 {
-                    if (strstr(argv[i], "has_perm_execute") != NULL)
-                        exec = 1;
-                    if (strstr(argv[i], "size_smaller=") != NULL)
-                    {
-                        char *nr = strchr(argv[i], '=') + 1;
-                        size = atoi(nr);
-                    }
-                    if (strstr(argv[i], "recursive") != NULL)
-                        recursive = 1;
+                    char *nr = strchr(argv[i], '=') + 1;
+                    size = atoi(nr);
                 }
-                if (recursive == 1)
-                {
-                    if (list_recursive(path, size, exec) == SUCCESS)
-                        printf("Success\n");
-                    else
-                        printf("Unsuccessful\n");
-                }
-                if(recursive == 0)
-                {
-                    if (list(path, size, exec) == SUCCESS)
-                        printf("Success\n");
-                    else
-                        printf("Unsuccessful\n");
-                }
+                if (strstr(argv[i], "recursive") != NULL)
+                    recursive = 1;
+            }
+            if (recursive == 1)
+            {
+                list_recursive(path, size, exec, 0);
+            }
+            if (recursive == 0)
+            {
+                list(path, size, exec);
             }
         }
     }
