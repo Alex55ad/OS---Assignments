@@ -9,28 +9,27 @@
 
 #define MAX_NR_OF_THREADS 50
 pthread_mutex_t mutex;
-pthread_cond_t cond1,cond2;
+pthread_cond_t cond1, cond2;
+sem_t semaphore, p5sem;
 
-
-	void *P4_thread_function(void *thread_id)
+void *P4_thread_function(void *thread_id)
 {
     int identifier = *(int *)thread_id;
     if (identifier == 1) // thread T4.1
     {
         pthread_mutex_lock(&mutex);
-        pthread_cond_wait(&cond1,&mutex);
+        pthread_cond_wait(&cond1, &mutex);
         info(BEGIN, 4, identifier);
         info(END, 4, identifier);
         pthread_mutex_unlock(&mutex);
         pthread_cond_broadcast(&cond2);
     }
-    else if (identifier == 4) //Thread T4.4
+    else if (identifier == 4) // Thread T4.4
     {
         info(BEGIN, 4, identifier);
         pthread_cond_broadcast(&cond1);
-        pthread_cond_wait(&cond2,&mutex);
+        pthread_cond_wait(&cond2, &mutex);
         info(END, 4, identifier);
-
     }
     else
     {
@@ -43,8 +42,17 @@ pthread_cond_t cond1,cond2;
 void *P5_thread_function(void *thread_id)
 {
     int identifier = *(int *)thread_id;
+    sem_wait(&semaphore);
     info(BEGIN, 5, identifier);
+    if (identifier == 14)
+        sem_wait(&p5sem);
+
+    if (identifier == 14)
+    {
+        sem_post(&p5sem);
+    }
     info(END, 5, identifier);
+    sem_post(&semaphore);
     return NULL;
 }
 
@@ -52,9 +60,13 @@ void create_threads(int pid, int nr_of_threads)
 {
     pthread_t thread_array[MAX_NR_OF_THREADS];
     int thread_identifiers[MAX_NR_OF_THREADS];
-    pthread_mutex_init(&mutex, NULL);   // initializing the mutex with NULL
-    pthread_cond_init(&cond1, NULL);     // initializing the mutex's condition variable with NULL
-    pthread_cond_init(&cond2, NULL);     // initializing the mutex's condition variable with NULL
+
+    pthread_mutex_init(&mutex, NULL); // initializing the mutex with NULL
+    pthread_cond_init(&cond1, NULL);  // initializing the mutex's condition variable with NULL
+    pthread_cond_init(&cond2, NULL);  // initializing the mutex's condition variable with NULL
+
+    sem_init(&semaphore, 1, 5);
+    sem_init(&p5sem, 1, 1);
 
     for (int i = 1; i <= nr_of_threads; i++)
     {
@@ -68,15 +80,17 @@ void create_threads(int pid, int nr_of_threads)
             pthread_create(&thread_array[i], NULL, P5_thread_function, (int *)&thread_identifiers[i]);
         }
     }
-    
+
     for (int i = 1; i <= nr_of_threads; i++)
     {
         pthread_join(thread_array[i], NULL); // join all created threads;
     }
-    
-    pthread_mutex_destroy(&mutex);   // destroying the mutex
-    pthread_cond_destroy(&cond1);     // destroying the mutex's condition variable
-    pthread_cond_destroy(&cond2);     // destroying the mutex's condition variable
+
+    pthread_mutex_destroy(&mutex); // destroying the mutex
+    pthread_cond_destroy(&cond1);  // destroying the mutex's condition variable
+    pthread_cond_destroy(&cond2);  // destroying the mutex's condition variable
+    sem_destroy(&semaphore);
+    sem_destroy(&p5sem);
 }
 
 int main()
