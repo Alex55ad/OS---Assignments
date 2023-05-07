@@ -12,24 +12,25 @@ pthread_mutex_t mutex;
 pthread_cond_t cond1,cond2;
 
 
-void *P4_thread_function(void *thread_id)
+	void *P4_thread_function(void *thread_id)
 {
     int identifier = *(int *)thread_id;
     if (identifier == 1) // thread T4.1
     {
-        pthread_cond_wait(&cond1,&mutex);
-        pthread_mutex_unlock(&mutex);
-        info(BEGIN, 4, identifier);
         pthread_mutex_lock(&mutex);
+        pthread_cond_wait(&cond1,&mutex);
+        info(BEGIN, 4, identifier);
         info(END, 4, identifier);
+        pthread_mutex_unlock(&mutex);
+        pthread_cond_broadcast(&cond2);
     }
     else if (identifier == 4) //Thread T4.4
     {
         info(BEGIN, 4, identifier);
-        pthread_cond_signal(&cond1);
-        pthread_mutex_unlock(&mutex);
+        pthread_cond_broadcast(&cond1);
+        pthread_cond_wait(&cond2,&mutex);
         info(END, 4, identifier);
-        pthread_cond_signal(&cond2);
+
     }
     else
     {
