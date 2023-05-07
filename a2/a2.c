@@ -4,31 +4,32 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <semaphore.h>
 #include "a2_helper.h"
 
 #define MAX_NR_OF_THREADS 50
-pthread_mutex_t mutex, mutexP5;
-pthread_cond_t cond, condP5;
-int thread_counter = 0;
+pthread_mutex_t mutex;
+pthread_cond_t cond1,cond2;
+
 
 void *P4_thread_function(void *thread_id)
 {
     int identifier = *(int *)thread_id;
     if (identifier == 1) // thread T4.1
     {
-        pthread_mutex_lock(&mutex);
-        pthread_cond_wait(&cond, &mutex);
+        pthread_cond_wait(&cond1,&mutex);
         pthread_mutex_unlock(&mutex);
         info(BEGIN, 4, identifier);
+        pthread_mutex_lock(&mutex);
         info(END, 4, identifier);
     }
-    else if (identifier == 4)
+    else if (identifier == 4) //Thread T4.4
     {
-        pthread_mutex_lock(&mutex);
-        pthread_cond_signal(&cond);
-        pthread_mutex_unlock(&mutex);
         info(BEGIN, 4, identifier);
+        pthread_cond_signal(&cond1);
+        pthread_mutex_unlock(&mutex);
         info(END, 4, identifier);
+        pthread_cond_signal(&cond2);
     }
     else
     {
@@ -41,31 +42,8 @@ void *P4_thread_function(void *thread_id)
 void *P5_thread_function(void *thread_id)
 {
     int identifier = *(int *)thread_id;
-    
-    pthread_mutex_lock(&mutexP5);
-    while (thread_counter >= 5)
-        pthread_cond_wait(&condP5, &mutexP5);
-    thread_counter++;
-    pthread_mutex_unlock(&mutexP5);
     info(BEGIN, 5, identifier);
-
-    if (identifier == 14)
-    {
-        while (thread_counter != 5)
-        {
-            pthread_cond_wait(&condP5, &mutexP5);
-        }
-        thread_counter--;
-        info(END, 5, identifier);
-    }
-    else
-    {
-        pthread_mutex_lock(&mutexP5);
-        thread_counter--;
-        pthread_cond_signal(&condP5);
-        pthread_mutex_unlock(&mutexP5);
-        info(END, 5, identifier);
-    }
+    info(END, 5, identifier);
     return NULL;
 }
 
@@ -74,9 +52,8 @@ void create_threads(int pid, int nr_of_threads)
     pthread_t thread_array[MAX_NR_OF_THREADS];
     int thread_identifiers[MAX_NR_OF_THREADS];
     pthread_mutex_init(&mutex, NULL);   // initializing the mutex with NULL
-    pthread_cond_init(&cond, NULL);     // initializing the mutex's condition variable with NULL
-    pthread_mutex_init(&mutexP5, NULL); // initializing the mutex with NULL
-    pthread_cond_init(&condP5, NULL);   // initializing the mutex's condition variable with NULL
+    pthread_cond_init(&cond1, NULL);     // initializing the mutex's condition variable with NULL
+    pthread_cond_init(&cond2, NULL);     // initializing the mutex's condition variable with NULL
 
     for (int i = 1; i <= nr_of_threads; i++)
     {
@@ -90,14 +67,15 @@ void create_threads(int pid, int nr_of_threads)
             pthread_create(&thread_array[i], NULL, P5_thread_function, (int *)&thread_identifiers[i]);
         }
     }
+    
     for (int i = 1; i <= nr_of_threads; i++)
     {
         pthread_join(thread_array[i], NULL); // join all created threads;
     }
+    
     pthread_mutex_destroy(&mutex);   // destroying the mutex
-    pthread_cond_destroy(&cond);     // destroying the mutex's condition variable
-    pthread_mutex_destroy(&mutexP5); // destroying the mutex
-    pthread_cond_destroy(&condP5);   // destroying the mutex's condition variable
+    pthread_cond_destroy(&cond1);     // destroying the mutex's condition variable
+    pthread_cond_destroy(&cond2);     // destroying the mutex's condition variable
 }
 
 int main()
