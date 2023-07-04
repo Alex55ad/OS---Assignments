@@ -1,0 +1,180 @@
+[1;35mTesting ping...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'ECHO'
+[TESTER] received string 'ECHO'
+[TESTER] received string 'VARIANT'
+[TESTER] received number 39249
+[TESTER] sending string 'EXIT'
+Test score: 10 / 10
+[1;35mTesting shm1...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'EXIT'
+Test score: 10 / 10
+[1;35mTesting shm_write...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'WRITE_TO_SHM'
+[TESTER] sending number 13141
+[TESTER] sending number 8127673
+[TESTER] received string 'WRITE_TO_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'WRITE_TO_SHM'
+[TESTER] sending number 2331338
+[TESTER] sending number 305419896
+[TESTER] received string 'WRITE_TO_SHM'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 10 / 10
+[1;35mTesting map_inexistent...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/NMO6fzfLeMh9.4A0'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 5 / 5
+[1;35mTesting map1...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/5WsbPCOq3L.1tJ'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+[TESTER] no mmap system call on file b'"test_root/5WsbPCOq3L.1tJ"'
+Test score: 0 / 5
+[1;35mTesting read_offset...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/5WsbPCOq3L.1tJ'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 2 / 10
+[1;35mTesting read_section...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/UUIeg7B4a0.MqG'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 1 / 10
+[1;35mTesting read_logical...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/uG5v9EUgL4.6pK'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 1 / 10
+
+Total score: 39 / 70
+Assignment grade: 56.71 / 100
+[1;35mTesting ping...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'ECHO'
+[TESTER] received string 'ECHO'
+[TESTER] received string 'VARIANT'
+[TESTER] received number 39249
+[TESTER] sending string 'EXIT'
+Test score: 10 / 10
+[1;35mTesting shm1...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'EXIT'
+Test score: 10 / 10
+[1;35mTesting shm_write...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'WRITE_TO_SHM'
+[TESTER] sending number 13141
+[TESTER] sending number 8127673
+[TESTER] received string 'WRITE_TO_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'WRITE_TO_SHM'
+[TESTER] sending number 2331338
+[TESTER] sending number 305419896
+[TESTER] received string 'WRITE_TO_SHM'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 10 / 10
+[1;35mTesting map_inexistent...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/NMO6fzfLeMh9.4A0'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 5 / 5
+[1;35mTesting map1...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/5WsbPCOq3L.1tJ'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+[TESTER] no mmap system call on file b'"test_root/5WsbPCOq3L.1tJ"'
+Test score: 0 / 5
+[1;35mTesting read_offset...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/5WsbPCOq3L.1tJ'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 2 / 10
+[1;35mTesting read_section...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/UUIeg7B4a0.MqG'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 1 / 10
+[1;35mTesting read_logical...[0m
+[TESTER] received string 'START'
+[TESTER] sending string 'CREATE_SHM'
+[TESTER] sending number 2331340
+[TESTER] received string 'CREATE_SHM'
+[TESTER] received string 'SUCCESS'
+[TESTER] sending string 'MAP_FILE'
+[TESTER] sending string 'test_root/uG5v9EUgL4.6pK'
+[TESTER] received string 'MAP_FILE'
+[TESTER] received string 'ERROR'
+[TESTER] sending string 'EXIT'
+Test score: 1 / 10
+
+Total score: 39 / 70
+Assignment grade: 56.71 / 100
